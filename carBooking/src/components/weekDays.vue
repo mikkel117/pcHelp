@@ -5,13 +5,21 @@ import { store } from "@/store";
 interface Props {
   weekday?: string;
   weekNumber?: number;
+  year?: number;
 }
 
-const props: Props = defineProps({ weekday: String, weekNumber: Number });
+const props: Props = defineProps({
+  weekday: String,
+  weekNumber: Number,
+  year: Number,
+});
 let date = ref<string>("");
 let bookingsToday = ref([]);
 onMounted(() => {
   getDate();
+  bookingsToday.value = store.carBookingArray.filter(
+    (item) => item.Date === date.value
+  );
 });
 
 /* watch(
@@ -22,13 +30,12 @@ onMounted(() => {
 ); */
 
 watch(
-  () => [store.carBookingArray.length, props.weekNumber],
+  () => [store.carBookingArray.length, props.weekNumber, props.year],
   () => {
     getDate();
     bookingsToday.value = store.carBookingArray.filter(
       (item) => item.Date === date.value
     );
-    console.log(bookingsToday.value);
   }
 );
 
@@ -51,8 +58,13 @@ function getDate() {
       weekday = "Friday";
       break;
   }
-  let datet = moment().day(weekday).week(props.weekNumber);
+  let datet = moment(props.year, "YYYY").day(weekday).week(props.weekNumber);
+
   date.value = datet.format("DD/MM/YYYY");
+  console.log("");
+
+  console.log();
+
   console.log(date.value);
 }
 </script>
@@ -60,7 +72,7 @@ function getDate() {
 <template>
   <div class="weekday">
     <section class="weekdayHeader">
-      <p>{{ weekday }}</p>
+      <p class="weekday">{{ weekday }}</p>
       <p class="date">{{ date }}</p>
       <p class="line" />
     </section>
@@ -97,8 +109,15 @@ function getDate() {
   align-items: center;
 }
 
-.weekdayHeader p {
+.weekdayHeader .weekday {
   font-size: 1.5rem;
+  font-weight: bolder;
+}
+
+.weekdayHeader .date {
+  font-size: 1.1rem;
+  align-self: flex-end;
+  margin-right: 5px;
 }
 
 .weekdayHeader {
@@ -125,6 +144,11 @@ function getDate() {
   flex-direction: column;
   border-bottom: 1px solid white;
   font-size: 1.3rem;
+  border: 1px solid white;
+  background-color: gray;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 1em;
 }
 
 .weekdayContent {

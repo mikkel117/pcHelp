@@ -1,0 +1,10 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "task-WorkerService1",
+      "appliesTo": "WorkerService1/",
+      "type": "launch"
+    }
+  ]
+}
