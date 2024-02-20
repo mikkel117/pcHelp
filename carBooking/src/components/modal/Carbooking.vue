@@ -1,18 +1,19 @@
 <script setup lang="ts">
+import { onMounted, toRefs } from "vue";
 import { watch, ref, reactive } from "vue";
-import { store } from "../store";
+import { store } from "../../store";
 import moment from "moment";
-
 const emit = defineEmits(["close"]);
-const hour = ref(0);
-const minute = ref(0);
-const addrese = ref("");
-const driver = ref("");
-const passenger = ref("");
+const hour = ref<number>(0);
+const minute = ref<number>(0);
+const addrese = ref<string>("");
+const driver = ref<string>("");
+const passenger = ref<string>("");
 let time: any = reactive({
   startTime: null,
   endTime: null,
 });
+
 function submit(e) {
   let index = store.carBookingArray.length;
   if (index === 0) {
@@ -53,37 +54,54 @@ watch(
     minute.value = minutes;
   }
 );
+
+function closeModal() {
+  emit("close");
+}
 </script>
 
 <template>
-  <form @submit.prevent="submit" id="test">
-    <label for="addrese">Addrese:</label>
-    <input type="text" name="addrese" required v-model="addrese" />
-    <label for="driver">Føre:</label>
-    <input type="text" name="driver" required v-model="driver" />
-    <label for="passenger">Passager:</label>
-    <input type="text" name="passenger" required v-model="passenger" />
-    <div>
-      <label for="date">Dato:</label>
-      <input type="date" name="date" required />
-      <label for="startTime">Start</label>
-      <input type="time" name="startTime" v-model="time.startTime" required />
-      <label for="endTime">Slut</label>
-      <input type="time" name="endTime" v-model="time.endTime" required />
+  <div class="modal">
+    <div class="modal-content">
+      <button class="close" @click="closeModal">x</button>
+      <p class="headerText">booking af bil</p>
+      <form @submit.prevent="submit" id="test">
+        <label for="addrese">Addrese:</label>
+        <input type="text" name="addrese" required v-model="addrese" />
+        <label for="driver">Føre:</label>
+        <input type="text" name="driver" required v-model="driver" />
+        <label for="passenger">Passager:</label>
+        <input type="text" name="passenger" required v-model="passenger" />
+        <div>
+          <label for="date">Dato:</label>
+          <input type="date" name="date" required />
+          <label for="startTime">Start</label>
+          <input
+            type="time"
+            name="startTime"
+            v-model="time.startTime"
+            required
+          />
+          <label for="endTime">Slut</label>
+          <input type="time" name="endTime" v-model="time.endTime" required />
+        </div>
+        <p>
+          det kommer til at tage Ca:
+          <span>
+            {{ hour }}
+            <!-- {{ hour > 1 ? "timer" : hour === 1 ? "time" : "timer" }} -->
+            t.
+          </span>
+          <!-- <span>&nbsp;</span> -->
+          <span class="minute">
+            {{ minute }}
+            min.
+          </span>
+        </p>
+        <button>book</button>
+      </form>
     </div>
-    <p>
-      det kommer til at tage Ca:
-      <span>
-        {{ hour }}
-        t.
-      </span>
-      <span class="minute">
-        {{ minute }}
-        min.
-      </span>
-    </p>
-    <button>book</button>
-  </form>
+  </div>
 </template>
 
 <style scoped>

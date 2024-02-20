@@ -1,20 +1,18 @@
 <script setup lang="ts">
 import weekDays from "./weekDays.vue";
-import Modal from "./Modal.vue";
+import carBooking from "./modal/Carbooking.vue";
+import DeliverCar from "./modal/DeliverCar.vue";
 import { Icon } from "@iconify/vue";
 import { ref } from "vue";
 import moment from "moment";
-import { store } from "@/store";
 let week = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag"];
-let showModel = ref(false);
-let weekNumber = ref(moment().week());
-//let year = ref(moment().year());
-let year = ref(2027);
-const closeModel = () => {
-  showModel.value = false;
-};
+let showBookingCar = ref<boolean>(false);
+let showDeliverCar = ref<boolean>(false);
+let weekNumber = ref<number>(moment().week());
+let year = ref<number>(moment().year());
+let user = ref<string>("bob");
 
-const incrementWeek = () => {
+function incrementWeek() {
   weekNumber.value++;
   if (
     weekNumber.value > moment(year.value, "YYYY").locale("da").isoWeeksInYear()
@@ -22,21 +20,24 @@ const incrementWeek = () => {
     weekNumber.value = 1;
     year.value++;
   }
-};
+}
 
-const decrementWeek = () => {
+function decrementWeek() {
   weekNumber.value = weekNumber.value - 1;
   if (weekNumber.value < 1) {
     year.value--;
     weekNumber.value = moment(year.value, "YYYY").locale("da").isoWeeksInYear();
   }
-};
+}
 </script>
 
 <template>
   <section class="bookingContainer">
     <div class="bookingWeekWrapper">
-      <button @click="showModel = true">book</button>
+      <button @click="showBookingCar = true" v-if="user != 'bob'">book</button>
+      <button @click="showDeliverCar = true" v-if="user == 'bob'">
+        aflever billen
+      </button>
       <div class="weekNavigator">
         <button @click="decrementWeek">
           <Icon icon="raphael:arrowleft2" />
@@ -57,7 +58,8 @@ const decrementWeek = () => {
       />
     </div>
   </section>
-  <Modal v-if="showModel" @close="closeModel" />
+  <carBooking v-if="showBookingCar" @close="showBookingCar = false" />
+  <DeliverCar v-if="showDeliverCar" @close="showDeliverCar = false" />
 </template>
 
 <style>

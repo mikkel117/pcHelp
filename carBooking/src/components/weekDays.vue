@@ -2,6 +2,7 @@
 import { onMounted, ref, watch } from "vue";
 import moment from "moment";
 import { store } from "@/store";
+import { CarBookingArray } from "@/types";
 interface Props {
   weekday?: string;
   weekNumber?: number;
@@ -14,20 +15,13 @@ const props: Props = defineProps({
   year: Number,
 });
 let date = ref<string>("");
-let bookingsToday = ref([]);
+let bookingsToday = ref<CarBookingArray[]>([]);
 onMounted(() => {
   getDate();
   bookingsToday.value = store.carBookingArray.filter(
     (item) => item.Date === date.value
   );
 });
-
-/* watch(
-  () => [store.carBookingArray.length, props.weekNumber],
-  () => {
-
-  }
-); */
 
 watch(
   () => [store.carBookingArray.length, props.weekNumber, props.year],
@@ -58,14 +52,12 @@ function getDate() {
       weekday = "Friday";
       break;
   }
-  let datet = moment(props.year, "YYYY").day(weekday).week(props.weekNumber);
-
-  date.value = datet.format("DD/MM/YYYY");
-  console.log("");
-
-  console.log();
-
-  console.log(date.value);
+  date.value = moment()
+    .isoWeekYear(props.year)
+    .locale("da")
+    .day(weekday)
+    .isoWeek(props.weekNumber)
+    .format("DD/MM/YYYY");
 }
 </script>
 

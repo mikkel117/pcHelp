@@ -91,7 +91,6 @@ namespace WorkerService1
                                         {
                                             _logger.LogInformation("Data is invalid");
                                         }
-                                        _logger.LogInformation($"jsonData length: {jsonData.Length.ToString()}");
                                         _logger.LogInformation($"jsonData: {jsonData}");
                                     }
                                     catch (JsonException ex)
